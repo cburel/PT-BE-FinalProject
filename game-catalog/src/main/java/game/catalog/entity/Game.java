@@ -21,26 +21,26 @@ import lombok.ToString;
 public class Game {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long gameId;
+	private Long gameId;
 	
-	String gameTitle;
-	String gameDescription;
-	String gameReleaseDate;
+	private String gameTitle;
+	private String gameDescription;
+	private String gameReleaseDate;
 	
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	@OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
-	Set<CharacterConcept> characterConcepts = new HashSet<>();
+	private Set<CharacterConcept> characterConcepts = new HashSet<>();
 	
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(name = "game_mechanic", joinColumns = @JoinColumn(name = "game_id"), inverseJoinColumns = @JoinColumn(name = "mechanic_id"))
-	Set<Mechanic> mechanics = new HashSet<>();
+	private Set<Mechanic> mechanics = new HashSet<>();
 	
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(name = "game_story_element", joinColumns = @JoinColumn(name = "game_id"), inverseJoinColumns = @JoinColumn(name = "story_element_id"))
-	Set<StoryElement> storyElements = new HashSet<>();
+	private Set<StoryElement> storyElements = new HashSet<>();
 }

@@ -17,14 +17,14 @@ public class CharacterConcept {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long characterConceptId;
+	private Long characterConceptId;
 	
-	String characterConceptName;
-	String characterConceptDescription;
+	private String characterConceptName;
+	private String characterConceptDescription;
 	
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "game_id")
-	Game game;
+	private Game game;
 }

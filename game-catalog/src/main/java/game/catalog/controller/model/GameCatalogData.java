@@ -13,13 +13,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class GameCatalogData {
-	Long gameId;
-	String gameTitle;
-	String gameDescription;
-	String gameReleaseDate;
-	Set<CharacterConcept> characterConcepts = new HashSet<>();
-	Set<Mechanic> mechanics = new HashSet<>();
-	Set<StoryElement> storyElements = new HashSet<>();
+	private Long gameId;
+	private String gameTitle;
+	private String gameDescription;
+	private String gameReleaseDate;
+	private Set<CharacterConcept> characterConcepts = new HashSet<>();
+	private Set<Mechanic> mechanics = new HashSet<>();
+	private Set<StoryElement> storyElements = new HashSet<>();
 	
 	public GameCatalogData(Game game){
 		gameTitle = game.getGameTitle();
@@ -42,10 +42,10 @@ public class GameCatalogData {
 	@Data
 	@NoArgsConstructor
 	public static class GameCatalogStoryElement {
-		Long storyElementId;
-		String storyElementName;
-		String storyElementDescription;
-		Set<GameCatalogStoryElement> games;
+		private Long storyElementId;
+		private String storyElementName;
+		private String storyElementDescription;
+		private Set<GameCatalogStoryElement> games = new HashSet<>();
 
 		GameCatalogStoryElement(StoryElement storyElement){
 			storyElementId = storyElement.getStoryElementId();
@@ -54,11 +54,13 @@ public class GameCatalogData {
 		}
 	}
 	
+	@Data
+	@NoArgsConstructor
 	public static class GameCatalogMechanic {
-		Long mechanicId;
-		String mechanicName;
-		String mechanicDescription;
-		Set<Game> games;
+		private Long mechanicId;
+		private String mechanicName;
+		private String mechanicDescription;
+		private Set<Game> games = new HashSet<>();
 		
 		GameCatalogMechanic(Mechanic mechanic){
 			mechanicId = mechanic.getMechanicId();
@@ -67,11 +69,13 @@ public class GameCatalogData {
 		}
 	}
 	
+	@Data
+	@NoArgsConstructor
 	public static class GameCatalogCharacterConcept{
-		Long characterConceptId;
-		String characterConceptName;
-		String characterConceptDescription;
-		Game game;
+		private Long characterConceptId;
+		private String characterConceptName;
+		private String characterConceptDescription;
+		private Game game;
 		
 		GameCatalogCharacterConcept(CharacterConcept concept){
 			characterConceptId = concept.getCharacterConceptId();

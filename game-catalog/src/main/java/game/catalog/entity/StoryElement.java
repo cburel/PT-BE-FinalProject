@@ -1,5 +1,6 @@
 package game.catalog.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -17,13 +18,13 @@ import lombok.ToString;
 public class StoryElement {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long storyElementId;
+	private Long storyElementId;
 	
-	String storyElementName;
-	String storyElementDescription;
+	private String storyElementName;
+	private String storyElementDescription;
 	
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	@ManyToMany(mappedBy = "storyElements", cascade = CascadeType.PERSIST)
-	Set<Game> games;
+	private Set<Game> games = new HashSet<>();
 }
