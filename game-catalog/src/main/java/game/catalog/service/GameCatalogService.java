@@ -26,7 +26,6 @@ public class GameCatalogService {
 	}
 	
 	private void copyGameFields(Game game, GameCatalogData gameCatalogData) {
-		game.setCharacterConcepts(gameCatalogData.getCharacterConcepts());
 		game.setGameDescription(gameCatalogData.getGameDescription());
 		game.setGameId(gameCatalogData.getGameId());
 		game.setGameReleaseDate(gameCatalogData.getGameReleaseDate());

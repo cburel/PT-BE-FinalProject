@@ -17,9 +17,9 @@ public class GameCatalogData {
 	private String gameTitle;
 	private String gameDescription;
 	private String gameReleaseDate;
-	private Set<CharacterConcept> characterConcepts = new HashSet<>();
-	private Set<Mechanic> mechanics = new HashSet<>();
-	private Set<StoryElement> storyElements = new HashSet<>();
+	private Set<GameCatalogCharacterConcept> characterConcepts = new HashSet<>();
+	private Set<GameCatalogMechanic> mechanics = new HashSet<>();
+	private Set<GameCatalogStoryElement> storyElements = new HashSet<>();
 	
 	public GameCatalogData(Game game){
 		gameTitle = game.getGameTitle();
@@ -27,15 +27,15 @@ public class GameCatalogData {
 		gameReleaseDate = game.getGameReleaseDate();
 		
 		for (CharacterConcept concept : game.getCharacterConcepts()) {
-			characterConcepts.add(concept);
+			characterConcepts.add(new GameCatalogCharacterConcept(concept));
 		}
 		
 		for (Mechanic mechanic : game.getMechanics()) {
-			mechanics.add(mechanic);
+			mechanics.add(new GameCatalogMechanic(mechanic));
 		}
 		
 		for (StoryElement storyElement : game.getStoryElements()) {
-			storyElements.add(storyElement);
+			storyElements.add(new GameCatalogStoryElement(storyElement));
 		}
 	}
 	
@@ -45,7 +45,7 @@ public class GameCatalogData {
 		private Long storyElementId;
 		private String storyElementName;
 		private String storyElementDescription;
-		private Set<GameCatalogStoryElement> games = new HashSet<>();
+		//private Set<GameCatalogStoryElement> games = new HashSet<>();
 
 		GameCatalogStoryElement(StoryElement storyElement){
 			storyElementId = storyElement.getStoryElementId();
@@ -60,7 +60,7 @@ public class GameCatalogData {
 		private Long mechanicId;
 		private String mechanicName;
 		private String mechanicDescription;
-		private Set<Game> games = new HashSet<>();
+		//private Set<Game> games = new HashSet<>();
 		
 		GameCatalogMechanic(Mechanic mechanic){
 			mechanicId = mechanic.getMechanicId();
@@ -75,7 +75,7 @@ public class GameCatalogData {
 		private Long characterConceptId;
 		private String characterConceptName;
 		private String characterConceptDescription;
-		private Game game;
+		//private Game game;
 		
 		GameCatalogCharacterConcept(CharacterConcept concept){
 			characterConceptId = concept.getCharacterConceptId();
