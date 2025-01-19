@@ -8,17 +8,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import game.catalog.controller.model.GameCatalogData;
+import game.catalog.controller.model.GameCatalogData.GameCatalogCharacterConcept;
 import game.catalog.controller.model.GameCatalogData.GameCatalogMechanic;
+import game.catalog.controller.model.GameCatalogData.GameCatalogStoryElement;
+import game.catalog.dao.CharacterConceptDao;
 import game.catalog.dao.GameCatalogDao;
 import game.catalog.dao.MechanicDao;
+import game.catalog.dao.StoryElementDao;
+import game.catalog.entity.CharacterConcept;
 import game.catalog.entity.Game;
 import game.catalog.entity.Mechanic;
+import game.catalog.entity.StoryElement;
 
 @Service
 public class GameCatalogService {
 	//@Autowired
-	private GameCatalogDao gameCatalogDao;
 	// constructor avoids autowiring for easier testing
+	private GameCatalogDao gameCatalogDao;	
 	public GameCatalogService(GameCatalogDao dao) {
 		this.gameCatalogDao = dao;
 	}
@@ -27,6 +33,18 @@ public class GameCatalogService {
 	public GameCatalogService(MechanicDao mechDao) {
 		this.mechanicDao = mechDao;
 	}
+	
+	private StoryElementDao sElementDao;
+	public GameCatalogService(StoryElementDao elementDao) {
+		this.sElementDao = elementDao;
+	}
+	
+	private CharacterConceptDao characterConceptDao;
+	public GameCatalogService(CharacterConceptDao ccDao) {
+		this.characterConceptDao = ccDao;
+	}
+	
+	// ----------- GAME METHODS --------- //
 	
 	@Transactional(readOnly = false)
 	public GameCatalogData saveGame(GameCatalogData gameCatalogData) {
@@ -68,7 +86,15 @@ public class GameCatalogService {
 	public GameCatalogData getGameById(Long gameId) {
 		return new GameCatalogData(findGameById(gameId));	
 	}
-
+	
+	@Transactional(readOnly = false)
+	public void deleteGameById(Long gameId) {
+		Game game = findGameById(gameId);
+		gameCatalogDao.delete(game);
+	}
+	
+	// ----------- MECHANIC METHODS --------- //
+	
 	@Transactional(readOnly = false)
 	public GameCatalogMechanic saveMechanic(Long gameId, GameCatalogMechanic mechanic) {
 		Game game = findGameById(gameId);
@@ -80,8 +106,23 @@ public class GameCatalogService {
 		mech.getGames().add(game);
 		
 		Mechanic dbMechanic = mechanicDao.save(mech);
+		
+		return new GameCatalogMechanic(dbMechanic);
 	}
 	
+	private void copyMechanicFields(Mechanic mech, GameCatalogMechanic mechanic) {
+		mech.setMechanicDescription(mechanic.getMechanicDescription());
+		mech.setMechanicId(mechanic.getMechanicId());
+		mech.setMechanicName(mechanic.getMechanicName());	
+	}
+
+	private Mechanic findOrCreateMechanic(Long gameId, Long mechanicId) {
+		if(Objects.isNull(mechanicId)) {
+			return new Mechanic();
+		}
+		return findMechanicById(gameId, mechanicId);
+	}
+
 	public Mechanic findMechanicById(Long gameId, Long mechanicId) {
 		Mechanic mechanic = mechanicDao.findById(mechanicId)
 				.orElseThrow(() -> new NoSuchElementException("Mechanic with ID=" + mechanicId + " was not found."));
@@ -99,5 +140,87 @@ public class GameCatalogService {
 		}
 		
 		return mechanic;
+	}
+	
+	@Transactional(readOnly = false)
+	public void deleteMechanicById(Long gameId, Long mechanicId) {
+		Mechanic mechanic = findMechanicById(gameId, mechanicId);
+		boolean found = false;
+		for (Game game: mechanic.getGames()){
+			if(game.getGameId() == gameId) {
+				found = true;
+				mechanicDao.deleteById(mechanicId);
+				break;
+			}
+			if (!found) {
+				throw new IllegalArgumentException("Mechanic with ID=" + mechanicId + "was not found.");
+			}
+		}
+	}
+	
+	// ----------- STORY ELEMENT METHODS --------- //
+	
+	@Transactional(readOnly = false)
+	public GameCatalogStoryElement saveStoryElement(Long gameId, GameCatalogStoryElement gameCatalogStoryElement) {
+		Game game = findGameById(gameId);
+		Long sElementId = gameCatalogStoryElement.getStoryElementById();
+		StoryElement sElement = findOrCreateStoryElement(gameId, sElementId);
+		
+		copyStoryElementFields(sElement, gameCatalogStoryElement);
+		
+		sElement.getGames().add(game);
+		
+		StoryElement dbElement = sElementDao.save(sElement);
+		
+		return new GameCatalogStoryElement(dbElement);
+	}
+	
+	private void copyStoryElementFields(StoryElement sElement, GameCatalogStoryElement gameCatalogStoryElement) {
+		sElement.setStoryElementDescription(gameCatalogStoryElement.getStoryElementDescription());
+		sElement.setStoryElementId(gameCatalogStoryElement.getStoryElementId());
+		sElement.setStoryElementName(gameCatalogStoryElement.getStoryElementName());
+	}
+
+	private StoryElement findOrCreateStoryElement(Long gameId, Long storyElementId) {
+		if(Objects.isNull(storyElementId)) {
+			return new StoryElement();
+		}
+		return findStoryElementById(gameId, storyElementId);
+	}
+
+	public StoryElement findStoryElementById(Long gameId, Long storyElementId) {
+		StoryElement sElement = sElementDao.findById(storyElementId)
+				.orElseThrow(() -> new NoSuchElementException("Story element with ID=" + storyElementId + " was not found."));
+		
+		boolean found = false;
+		
+		for(Game game : sElement.getGames()) {
+			if(game.getGameId() == gameId) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			throw new IllegalArgumentException("The mechanic with ID=" + storyElementId + " does not belong to game with ID=" + gameId);
+		}
+		
+		return sElement;
+	}
+	
+	
+	// ----------- CHARACTER CONCEPT METHODS --------- //
+	
+	@Transactional(readOnly = false)
+	public GameCatalogCharacterConcept saveCharacterConcept(Long gameId, GameCatalogCharacterConcept gameCatalogCharacterConcept) {
+		Game game = findGameById(gameId);
+		Long characterConceptId = gameCatalogCharacterConcept.getCharacterConceptId();
+		CharacterConcept characterConcept = findOrCreateCharacterConcept(gameId, characterConceptId);
+		
+		copyCharacterConceptFields(characterConcept, gameCatalogCharacterConcept);
+		
+		characterConcept.setGame(game);
+		game.getCharacterConcepts().add(characterConcept);
+		
+		CharacterConcept dbCharacterConcept = characterConceptDao.save(characterConcept);
 	}
 }

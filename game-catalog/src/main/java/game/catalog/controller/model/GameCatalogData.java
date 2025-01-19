@@ -47,7 +47,7 @@ public class GameCatalogData {
 		private String storyElementDescription;
 		//private Set<GameCatalogStoryElement> games = new HashSet<>();
 
-		GameCatalogStoryElement(StoryElement storyElement){
+		public GameCatalogStoryElement(StoryElement storyElement){
 			storyElementId = storyElement.getStoryElementId();
 			storyElementName = storyElement.getStoryElementName();
 			storyElementDescription = storyElement.getStoryElementDescription();
@@ -62,7 +62,7 @@ public class GameCatalogData {
 		private String mechanicDescription;
 		//private Set<Game> games = new HashSet<>();
 		
-		GameCatalogMechanic(Mechanic mechanic){
+		public GameCatalogMechanic(Mechanic mechanic){
 			mechanicId = mechanic.getMechanicId();
 			mechanicName = mechanic.getMechanicName();
 			mechanicDescription = mechanic.getMechanicDescription();
@@ -77,7 +77,7 @@ public class GameCatalogData {
 		private String characterConceptDescription;
 		//private Game game;
 		
-		GameCatalogCharacterConcept(CharacterConcept concept){
+		public GameCatalogCharacterConcept(CharacterConcept concept){
 			characterConceptId = concept.getCharacterConceptId();
 			characterConceptName = concept.getCharacterConceptName();
 			characterConceptDescription = concept.getCharacterConceptDescription();
