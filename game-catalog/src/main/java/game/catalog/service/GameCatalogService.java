@@ -163,7 +163,7 @@ public class GameCatalogService {
 	@Transactional(readOnly = false)
 	public GameCatalogStoryElement saveStoryElement(Long gameId, GameCatalogStoryElement gameCatalogStoryElement) {
 		Game game = findGameById(gameId);
-		Long sElementId = gameCatalogStoryElement.getStoryElementById();
+		Long sElementId = gameCatalogStoryElement.getStoryElementId();
 		StoryElement sElement = findOrCreateStoryElement(gameId, sElementId);
 		
 		copyStoryElementFields(sElement, gameCatalogStoryElement);
@@ -222,5 +222,33 @@ public class GameCatalogService {
 		game.getCharacterConcepts().add(characterConcept);
 		
 		CharacterConcept dbCharacterConcept = characterConceptDao.save(characterConcept);
+		
+		return new GameCatalogCharacterConcept(dbCharacterConcept);
+	}
+
+	private void copyCharacterConceptFields(CharacterConcept characterConcept,
+			GameCatalogCharacterConcept gameCatalogCharacterConcept) {
+		characterConcept.setCharacterConceptDescription(gameCatalogCharacterConcept.getCharacterConceptDescription());
+		characterConcept.setCharacterConceptId(gameCatalogCharacterConcept.getCharacterConceptId());
+		characterConcept.setCharacterConceptName(gameCatalogCharacterConcept.getCharacterConceptName());
+	}
+
+	private CharacterConcept findOrCreateCharacterConcept(Long gameId, Long characterConceptId) {
+		if(Objects.isNull(characterConceptId)) {
+			return new CharacterConcept();
+		}
+		
+		return findCharacterConceptById(gameId, characterConceptId);
+	}
+
+	private CharacterConcept findCharacterConceptById(Long gameId, Long characterConceptId) {
+		CharacterConcept characterConcept = characterConceptDao.findById(characterConceptId).orElseThrow(
+					() -> new NoSuchElementException("Character concept with ID=" + characterConceptId + " was not found."));
+		
+		if (characterConcept.getGame().getGameId() != gameId) {
+			throw new IllegalArgumentException("Character concept with ID=" + characterConceptId + " does not belong to game with ID=" + gameId + ".");
+		}
+		
+		return characterConcept;
 	}
 }
