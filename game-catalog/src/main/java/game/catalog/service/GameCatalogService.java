@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,28 +23,15 @@ import game.catalog.entity.StoryElement;
 
 @Service
 public class GameCatalogService {
-	//@Autowired
-	// constructor avoids autowiring for easier testing
+	@Autowired
 	private GameCatalogDao gameCatalogDao;	
-	public GameCatalogService(GameCatalogDao dao) {
-		this.gameCatalogDao = dao;
-	}
-
+	@Autowired
 	private MechanicDao mechanicDao;
-	public GameCatalogService(MechanicDao mechDao) {
-		this.mechanicDao = mechDao;
-	}
-	
+	@Autowired
 	private StoryElementDao sElementDao;
-	public GameCatalogService(StoryElementDao elementDao) {
-		this.sElementDao = elementDao;
-	}
-	
+	@Autowired
 	private CharacterConceptDao characterConceptDao;
-	public GameCatalogService(CharacterConceptDao ccDao) {
-		this.characterConceptDao = ccDao;
-	}
-	
+		
 	// ----------- GAME METHODS --------- //
 	
 	@Transactional(readOnly = false)
